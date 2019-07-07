@@ -47,3 +47,5 @@ Neural network algorithm、architecture and some materials.
 >      - 6.5  使用学习好的filter
 > - 7  Deep_convnet
 >      - 7.1  浮点运算的影响
+
+**_BONUS_** : [Perceptron](Perceptron.ipynb)
