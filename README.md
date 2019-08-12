@@ -58,3 +58,6 @@ Neural network algorithm、architecture and some materials.
 > - resNet naive
 > - VGGNet naive
 > - MobileNet naive
+
+## 第三部分 [RNN使用TensorFlow实现](RNN_tensorflow/)
+进行基本文本预处理，其中batch处理需要一些小技巧。embedding_lookup和softmax共享权重矩阵。使用perplexity评价LM。
