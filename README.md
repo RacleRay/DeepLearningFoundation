@@ -61,3 +61,14 @@ Neural network algorithm、architecture and some materials.
 
 ## 第三部分 [RNN使用TensorFlow实现](RNN_tensorflow/)
 进行基本文本预处理，其中batch处理需要一些小技巧。embedding_lookup和softmax共享权重矩阵。使用perplexity评价LM。
+Seq2Seq attention的实现。
+> - LM
+> - Seq2Seq attention
+>   - dynamic_rnn:排除padding state传递影响，直接使用上一步state覆盖
+>   - sequence_mask:排除padding在计算loss时的影响
+>   - encoder bidirectional_rnn:attention需要主要到分别来自上下文的语义信息
+>   - decoder while_loop:实现动态inference
+>   - decoder:只继承attention之后的encoder outputs，不继承encoder state，decoder可以更自由的选择结构形式
+>   - decoder:embedding和softmax共享权重
+
+
