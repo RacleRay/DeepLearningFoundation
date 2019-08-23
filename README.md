@@ -75,3 +75,8 @@ Seq2Seq attention的实现。
 > - Keras的两种建模方式
 > - Slim的简单使用
 > - Estimator自定义模型，使用Dataset对象
+
+## 第五部分 [ML算法For fun to know why](ML_Algorithm/)
+> - [SVM](ML_Algorithm/SVM.py)
+>   - 理解SVM算法原理的demo，核心求解目标：max(||w||) and min(b), s.t. y(wx + b) >= 1。
+>   - soft margin的实现可以将边界向decision boundary增加一个容忍量。
