@@ -51,6 +51,7 @@ Neural network algorithm、architecture and some materials.
 > - 9  [LSTM](RNN-LSTM.ipynb)
 
 **_BONUS_** : [Perceptron](Perceptron.ipynb)
+**_BONUS_** : [拓扑排序算法 -- 实现神经网络框架图计算逻辑](build_NN.ipynb)
 
 ## 第二部分 [CNN常用Model使用TensorFlow实现](CNN_model_tensorflow/)
 使用TensorFlow1.6完成了常用CNN基本结构的构建。
