@@ -50,7 +50,7 @@ Neural network algorithm、architecture and some materials.
 > - 8  [RNN](RNN-LSTM.ipynb)
 > - 9  [LSTM](RNN-LSTM.ipynb)
 
-**_BONUS_** : [Perceptron](Perceptron.ipynb)
+**_BONUS_** : [Perceptron](Perceptron.ipynb)  
 **_BONUS_** : [拓扑排序算法 -- 实现神经网络框架图计算逻辑](build_NN.ipynb)
 
 ## 第二部分 [CNN常用Model使用TensorFlow实现](CNN_model_tensorflow/)
@@ -77,7 +77,9 @@ Seq2Seq attention的实现。
 > - Slim的简单使用
 > - Estimator自定义模型，使用Dataset对象
 
-## 第五部分 [ML算法For fun to know why](ML_Algorithm/)
+## 第五部分 [ML+DL算法模型](ML_Algorithm/)
 > - [SVM](ML_Algorithm/SVM.py)
 >   - 理解SVM算法原理的demo，核心求解目标：max(||w||) and min(b), s.t. y(wx + b) >= 1。
->   - soft margin的实现可以将边界向decision boundary增加一个容忍量。
+>   - soft margin的实现可以将边界向decision boundary增加一个容忍量
+> - [VAE](VAE/)
+>   - DL生成式模型，keras和pytorch版本
