@@ -1,0 +1,112 @@
+import torch
+import visdom
+from torch.utils.data import DataLoader
+from torch import nn, optim
+from torchvision import transforms, datasets
+
+
+
+
+class VAE(nn.Module):
+    def __init__(self):
+        super(VAE, self).__init__()
+
+        # [b, 784] => [b, 20]
+        self.encoder = nn.Sequential(
+            nn.Linear(784, 256),
+            nn.ReLU(),
+            nn.Linear(256, 64),
+            nn.ReLU(),
+            nn.Linear(64, 20),
+            nn.ReLU()
+        )
+
+        # [b, 20] => [b, 784]
+        self.decoder = nn.Sequential(
+            nn.Linear(10, 64),
+            nn.ReLU(),
+            nn.Linear(64, 256),
+            nn.ReLU(),
+            nn.Linear(256, 784),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        """
+        :param x: [b, 1, 28, 28]
+        :return:
+        """
+        batchsz = x.size(0)
+        # flatten
+        x = x.view(batchsz, 784)
+        # encode
+        h_ = self.encoder(x)
+
+        # sample
+        # 这里sample出的低维表示，实际是10维
+        # 分别对应一个mu和sigma
+        # 因此，mu + sigma一共是20维
+        mu, sigma = h_.chunk(2, dim=1)
+        h = mu + sigma * torch.rand_like(sigma)
+
+        # decoder
+        x_hat = self.decoder(h)
+        # reshape
+        x_hat = x_hat.view(batchsz, 1, 28, 28)
+
+        kld_loss = 0.5 * torch.sum(
+            torch.pow(mu, 2) +
+            torch.pow(sigma, 2) -
+            torch.log(1e-8 + torch.pow(sigma, 2)) - 1
+        ) / (batchsz * 28 * 28)
+
+        return x_hat, kld_loss
+
+
+def main():
+    mnist_train = datasets.MNIST('mnist', True, transform=transforms.Compose([
+                                    transforms.ToTensor()]), download=True)
+    mnist_train = DataLoader(mnist_train, batch_size=32, shuffle=True)
+
+
+    mnist_test = datasets.MNIST('mnist', False, transform=transforms.Compose([
+                                    transforms.ToTensor()]), download=True)
+    mnist_test = DataLoader(mnist_test, batch_size=32, shuffle=True)
+
+    x, _ = iter(mnist_train).next()  # 不需要label
+
+    device = torch.device('cuda:0')
+    model = VAE().to(device)  # to(device)
+    criteon = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=1e-3)
+    print(model)
+
+    viz = visdom.Visdom()
+    for epoch in range(10):
+        for batchidx, (x, _) in enumerate(mnist_train):
+            x = x.to(device)  # to(device)
+
+            x_hat, kld = model(x)
+            loss = criteon(x_hat, x)
+
+            if kld is not None:
+                elbo = loss + 1.0 * kld
+                loss = elbo
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        print(epoch, 'loss:', loss.item(), 'kld:', kld.item())
+
+        x, _ = iter(mnist_test).next()
+        x = x.to(device)  # to(device)
+        with torch.no_grad():
+            x_hat, kld = model(x)
+
+        viz.images(x, nrow=8,  win='x', opts=dict(title='x'))
+        viz.images(x_hat, nrow=8, win='x_hat', opts=dict(title='x_hat'))
+
+
+if __name__ == '__main__':
+    main()
