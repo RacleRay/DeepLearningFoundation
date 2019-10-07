@@ -83,3 +83,7 @@ Seq2Seq attention的实现。
 >   - soft margin的实现可以将边界向decision boundary增加一个容忍量
 > - [VAE](VAE/)
 >   - DL生成式模型，keras和pytorch版本
+> - [GAN](GAN/)
+>   - WGAN实现，CGAN在MNIST数据集上实验，ACGAN生成人脸实验
+>   - DCGAN在Have_Fun repository里实现过。
+>   - 就人脸生成任务而言，ACGAN效果相对更好
