@@ -87,3 +87,5 @@ Seq2Seq attention的实现。
 >   - WGAN实现，CGAN在MNIST数据集上实验，ACGAN生成人脸实验
 >   - DCGAN在Have_Fun repository里实现过。
 >   - 就人脸生成任务而言，ACGAN效果相对更好
+> - [Capsule Net](CapsNet/)
+>   - 根据Capsule Net原论文，参考[实现1](https://github.com/naturomics/CapsNet-Tensorflow.git), [实现1](https://github.com/XifengGuo/CapsNet-Pytorch)，修改了部分模型计算过程，在MNIST数据集上实验。
