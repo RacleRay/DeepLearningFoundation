@@ -10,7 +10,15 @@
 
 ​	一个capsule代表图像中一个部分的目标信息，并且文章中提到“感知拥挤“的研究，来支撑 一个capsule只代表一个目标信息的合理性。
 
+![image-20191110163026495](1-CapsuleNet和动态路由.assets/image-20191110163026495.png)
+
 ​	capsule可以代表目标的很多信息，文章将capsule输出vector的长度约束在1以内，代表存在概率；vector的方向代表目标的特征。
+
+​	capsule的学习的信息具有一种全局的相关性。这样可以解决以下的问题。CNN倾向于局部特征的检测，整体上的空间关系对其预测结果的影响较小。实际上不是人脸的照片，在此处都检测为正确。
+
+![image-20191110155508014](1-CapsuleNet和动态路由.assets/image-20191110155508014.png)
+
+---
 
 ### Vector inputs and outputs of a capsule
 
@@ -25,15 +33,53 @@ $$
 
 ![1570955897796](1-CapsuleNet和动态路由.assets/1570955897796.png)
 
+![image-20191110170411374](1-CapsuleNet和动态路由.assets/image-20191110170411374.png)
+
 ​	输出将确保short vectors长度趋于0，long vectors长度趋于1。角度代表的信息由矩阵变换和低层不同特征的向量加权求和得到。
 
-​	u来自低层级的capsule的输出。$c_{ij}$由iterative dynamic routing process计算。![1570956636011](1-CapsuleNet和动态路由.assets/1570956636011.png)
+​	u来自低层级的capsule的输出。$c_{ij}$由iterative dynamic routing process计算。$b_{ij}$首先作为log先验概率初始化，在每一步迭代中更新概率。![1570956636011](1-CapsuleNet和动态路由.assets/1570956636011.png)
 $$
 c_{i j}=\frac{\exp \left(b_{i j}\right)}{\sum_{k} \exp \left(b_{i k}\right)}
 $$
 ​	$c_{ij}$相当于CNN中max pooling干的事。感觉有点像attention，iterative attention。
 
+![image-20191110164629017](1-CapsuleNet和动态路由.assets/image-20191110164629017.png)
+
+![image-20191110164449384](1-CapsuleNet和动态路由.assets/image-20191110164449384.png)
+
 ​	这种“routing-by-agreement”应该比通过max-pooling实现的非常原始的路由形式更加有效。后者可以使一层中的神经元忽略该层中除了最活跃的特征之外的所有特征。前者层层迭代，层层parsing，信息损失自然更少。
+
+​	之后，Hinton又提出了EM routing[Matrix capsules with EM routing. ICLR (2018)]。 通过计算Existence probability和概率分布完成不同层间的计算，简单示意图如下。[code reference](https://github.com/yl-1993/Matrix-Capsules-EM-PyTorch)
+
+![image-20191110151624084](1-CapsuleNet和动态路由.assets/image-20191110151624084.png)
+
+#### max-pooling problem
+
+​	max-pooling还存在以下问题：
+
+ 1. 甚至不能区分左和右
+
+ 2. 对rotation不敏感，不能学习到方向信息
+
+ 3. 一次只能‘看到’一个object
+
+ 4. max-pooling只做到spatial invariance
+
+    ​	 ![image-20191110163730310](1-CapsuleNet和动态路由.assets/image-20191110163730310.png)
+
+    而不能做到spatial equivariance
+
+    ![image-20191110164114175](1-CapsuleNet和动态路由.assets/image-20191110164114175.png)
+
+    capsule net通过：
+
+    ![image-20191110165736553](1-CapsuleNet和动态路由.assets/image-20191110165736553.png)
+
+    计算下一层capsule经过W变换后的u，进行组合，得到不同的结果。错误的预测route被裁剪(pruned)，是模型具有一定的spatial equivariance。
+
+    ![image-20191110170300458](1-CapsuleNet和动态路由.assets/image-20191110170300458.png)
+
+---
 
 ### Margin loss for digit existence
 
@@ -49,15 +95,43 @@ $$
 
 ​	整体损失，还要加上capsule重构图像特征的损失。
 
+![image-20191110162131283](1-CapsuleNet和动态路由.assets/image-20191110162131283.png)
+
+---
+
 ### CapsNet architecture
 
 ![1570958302422](1-CapsuleNet和动态路由.assets/1570958302422.png)
+
+![image-20191110160905390](1-CapsuleNet和动态路由.assets/image-20191110160905390.png)
+
+![image-20191110161236308](1-CapsuleNet和动态路由.assets/image-20191110161236308.png)
+
+​	32个capsule，每个8维。
+
+![image-20191110161436562](1-CapsuleNet和动态路由.assets/image-20191110161436562.png)
+
+​	转换后，每个class capsule16维，不同而维度影响重构图像的不同特征。
+
+​	routing-by-agreement的迭代过程就是不同的route squash结果进行裁剪的过程，计算结果相差大的route逐渐被移除。
+
+![image-20191110171656945](1-CapsuleNet和动态路由.assets/image-20191110171656945.png)
+
+​	EM route则是计算primry结果和route squash结果分布的差异。
+
+![image-20191110172223944](1-CapsuleNet和动态路由.assets/image-20191110172223944.png)
+
+​	capsule输出vector的长度约束在1以内，代表存在概率；vector的方向代表目标的特征。
+
+​	其中每个capsule的转化矩阵都是独立的不同的，每个class对应一个capsule。
 
 ​	A simple CapsNet with 3 layers. PrimaryCaps计算第一层capsules的输入， DigitCaps计算部分使用iterative dynamic routing，计算输出capsules。
 
 ![1570958488870](1-CapsuleNet和动态路由.assets/1570958488870.png)
 
-​	重构图像网络，采用训练好的DigitCaps，在此基础上训练重构网络，计算图像特征重构损失。
+​	重构图像网络，采用训练好的DigitCaps，在此基础上训练重构网络，计算图像特征重构损失。只需要将true label的capsule提取出来进行重构计算即可。因此，多个数字重合的重构也能实现。
+
+---
 
 ###  Code
 
@@ -253,3 +327,48 @@ class CapsuleNet(nn.Module):
         return length, reconstruction.view(-1, *self.input_size)
 ```
 
+---
+
+### Other capsules
+
+#### Text
+
+​	使用capsule nets处理文本的简单架构[Investigating capsule networks with dynamic routing for text classification. EMNLP (2018)]，如下图所示。
+
+![image-20191110152353504](1-CapsuleNet和动态路由.assets/image-20191110152353504.png)
+
+#### Graph
+
+​	结合GNN的简单网络示意[Capsule Graph Neural Network. ICLR (2018)]。
+
+![image-20191110152747324](1-CapsuleNet和动态路由.assets/image-20191110152747324.png)
+
+#### 3D point cloud
+
+​	3D重构[3D Point-Capsule Networks. CVPR,  (2019)]
+
+![image-20191110152955662](1-CapsuleNet和动态路由.assets/image-20191110152955662.png)
+
+### Applications
+
+​	Relation extraction，Adversary detection，Brain tumor classification，Classification of Breast Cancer.
+
+​	比如，Relation extraction方面的研究[Multi-labeled Relation Extraction with Attentive Capsule Network. AAAI (2018)]
+
+![image-20191110153704495](1-CapsuleNet和动态路由.assets/image-20191110153704495.png)
+
+​	[Attention-Based Capsule Networks with Dynamic Routing for Relation Extraction. EMNLP 2018]
+
+![image-20191110153837670](1-CapsuleNet和动态路由.assets/image-20191110153837670.png)
+
+### Problems
+
+1. Optimizing routing
+2. 当存在较多class时，参数量很大
+3. 不能驾驭大规模数据集
+
+### Resources
+
+1. [CVPR2019 Tutorial](https://www.crcv.ucf.edu/cvpr2019-tutorial/resources.html)
+
+   
