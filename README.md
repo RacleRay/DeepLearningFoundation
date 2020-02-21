@@ -71,6 +71,7 @@ Seq2Seq attention的实现。
 >   - decoder while_loop:实现动态inference
 >   - decoder:只继承attention之后的encoder outputs，不继承encoder state，decoder可以更自由的选择结构形式
 >   - decoder:embedding和softmax共享权重
+> - Translation model based on seq2seq attention(TF2.0)
 
 ## 第四部分 [TensorFlow高层封装](TF_tools/)
 > - Keras的两种建模方式
