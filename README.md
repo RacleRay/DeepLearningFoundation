@@ -93,3 +93,6 @@ Seq2Seq attention的实现。
 >   - 根据Capsule Net原论文，参考[实现1](https://github.com/naturomics/CapsNet-Tensorflow.git), [实现1](https://github.com/XifengGuo/CapsNet-Pytorch)，修改了部分模型计算过程，在MNIST数据集上实验。
 > - [Transformer](2.0-Transformer.ipynb)
 >   - Transormer tensorflow 2.0 实现
+> - [Bert fine-tune](NLP/Bert_fine_tune.ipynb)
+>   - 文本表示方法较为系统的总结，[Word2Vec](NLP/文本表示.md)以及[预训练语言模型](NLP/文本表示进阶.md)
+>   - 结合Transformer，可以对这部分算法有一定的认知。
