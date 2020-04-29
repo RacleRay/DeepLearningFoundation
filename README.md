@@ -86,6 +86,8 @@ Seq2Seq attention的实现。
 >   - 概率图模型部分总结笔记
 > - [HMM](PGM/hmm.py)
 >   - 实现前向、后向算法。使用Baum-Walch进行参数学习（局部最优解），viterbi算法进行最优状态路径decoding。
+> - [CRF tagging](PGM/crf_tagging.py)
+>   - 使用sklearn_crfsuite进行词性训练和测试。
 > - [VAE](VAE/)
 >   - DL生成式模型，keras和pytorch版本
 > - [GAN](GAN/)
