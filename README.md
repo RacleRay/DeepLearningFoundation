@@ -82,6 +82,10 @@ Seq2Seq attention的实现。
 > - [SVM](ML_Algorithm/SVM.py)
 >   - 理解SVM算法原理的demo，核心求解目标：max(||w||) and min(b), s.t. y(wx + b) >= 1。
 >   - soft margin的实现可以将边界向decision boundary增加一个容忍量
+> - [PGM](PGM/)
+>   - 概率图模型部分总结笔记
+> - [HMM](PGM/hmm.py)
+>   - 实现前向、后向算法。使用Baum-Walch进行参数学习（局部最优解），viterbi算法进行最优状态路径decoding。
 > - [VAE](VAE/)
 >   - DL生成式模型，keras和pytorch版本
 > - [GAN](GAN/)
