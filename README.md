@@ -104,3 +104,6 @@ Seq2Seq attention的实现。
 >   - 结合Transformer，可以对这部分算法有一定的认知。
 > - [GCN](GCN/)
 >   - basic GCN根据关联关系进行节点标签分类的监督学习实例。
+> - [Pointer net for summary in Chinese](pointer-generator/)
+>   - 生成式文章摘要算法，一种简洁地处理OOV词的思路。encoder-decoder的结构，也有很多修改的参考。根据资料来看，使用transformer结构应该会有更好一些的效果。
+
