@@ -287,7 +287,7 @@ class Batcher:
             self._bucketing_cache_size = 1  # only load one batch's worth of examples before bucketing; this essentially means no bucketing
             self._finished_reading = False  # this will tell us when we're finished reading the dataset
         else:
-            # 注意：_num_example_q_threads最好大于batch size * _bucketing_cache_size。
+            # 注意：model处理速度快时，调整不同线程数量。
             # _num_example_q_threads > _num_batch_q_threads
             self._num_example_q_threads = 24  # num threads to fill example queue
             self._num_batch_q_threads = 4  # num threads to fill batch queue
